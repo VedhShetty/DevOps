@@ -57,7 +57,7 @@ pipeline {
                 echo "Running Java Application"
                 bat '''
 				docker rm -f myjavaappcont || exit 0
-				docker run --name myjavaappcont deepikkaa20/mymvnproj:latest
+				docker run --name myjavaappcont vedhshetty/mymvnproj:latest
 				'''
             }
         }
