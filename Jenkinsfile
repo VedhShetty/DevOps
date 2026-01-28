@@ -55,6 +55,10 @@ pipeline {
         stage('Deploy the project using Container') {
             steps {
                 echo "Running Java Application"
+                bat '''
+				docker rm -f myjavaappcont || exit 0
+				docker run --name myjavaappcont deepikkaa20/mymvnproj:latest
+				'''
             }
         }
     }
