@@ -35,16 +35,6 @@ pipeline {
                bat 'docker build -t mvnproj:1.0 .'
             }
         }
-
-		stage('Verify Credential Injection') {
-    		steps {
-        		withCredentials([string(credentialsId: 'dockerhubpwd', variable: 'DOCKER_PASS')]) {
-            		bat '''
-               	 		echo TokenLength:%DOCKER_PASS%
-            		'''
-        		}
-    	 	}
-		}
          stage('Push Docker Image to DockerHub') {
             steps {
                echo "Push Docker Image to DockerHub for mvn project"
