@@ -29,14 +29,17 @@ pipeline {
                bat 'mvn clean package -DskipTests' 
             }
         }
-        stage('Test The Appln') {
+        stage(' Build the Docker Image') {
             steps {
-               echo "Testing my JAVA project"
+               echo "Build the Docker Image for mvn project"
+               bat 'docker build -t mvnproj:1.0 .'
             }
         }
-        stage('Deploy the project') {
+         
+       
+        stage('Deploy the project using Container') {
             steps {
-                echo "Project is getting Deployed"
+                echo "Running Java Application"
             }
         }
     }
