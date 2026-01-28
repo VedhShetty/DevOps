@@ -11,10 +11,22 @@ pipeline {
                git branch: 'main', credentialsId: 'mygithubcred', url: 'https://github.com/VedhShetty/DevOps.git'
             }
         }
+         stage('Test the Project') {
+            steps {
+               echo "Test my JAVA project"
+               bat 'mvn clean test' 
+            }
+              post {
+                  always {
+                         junit '**/target/surefire-reports/*.xml'
+                         echo 'Test Run succeeded!'          
+					}
+				}
+		}
         stage('Build Project') {
             steps {
                echo "Building my JAVA project"
-               bat 'mvn clean package' 
+               bat 'mvn clean package -DskipTests' 
             }
         }
         stage('Test The Appln') {
