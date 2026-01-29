@@ -36,21 +36,22 @@ pipeline {
             }
         }
          stage('Push Docker Image to DockerHub') {
-   	 	 	steps {
+    		steps {
         		withCredentials([usernamePassword(
 		            credentialsId: 'dockerhubcred',
 		            usernameVariable: 'DOCKER_USER',
 		            passwordVariable: 'DOCKER_PASS'
-			        )]) {
-	            bat '''
-	                docker logout
-	                docker login -u %DOCKER_USER% -p %DOCKER_PASS%
-	                docker tag mvnproj:1.0 vedhshetty/mymvnproj:latest
-	                docker push vedhshetty/mymvnproj:latest
-	            '''
-        		}
+		        )]) {
+		            bat '''
+		                docker logout
+		                echo %DOCKER_PASS% | docker login -u %DOCKER_USER% --password-stdin
+		                docker tag mvnproj:1.0 vedhshetty/mymvnproj:latest
+		                docker push vedhshetty/mymvnproj:latest
+		            '''
+        			}
     		}
 		}
+
        
         stage('Deploy the project using Container') {
             steps {
