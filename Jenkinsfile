@@ -55,18 +55,18 @@ pipeline {
             steps {
                 echo "Running Java Application"
                 bat '''
-                minikube delete
-                minikube start
-                minikube status
+                "C:\\Program Files\\Kubernetes\\Minikube\\minikube.exe" delete
+                "C:\\Program Files\\Kubernetes\\Minikube\\minikube.exe" start
+                "C:\\Program Files\\Kubernetes\\Minikube\\minikube.exe" status
                 
-                minikube image load vedhshetty/mymvnproj:latest
+                "C:\\Program Files\\Kubernetes\\Minikube\\minikube.exe" image load vedhshetty/mymvnproj:latest
                 kubectl apply -f deployment.yaml
                 sleep 20
                 kubectl get pods
                 kubectl apply -f services.yaml
                 sleep 10
                 kubectl get services
-                minikube image ls
+                "C:\\Program Files\\Kubernetes\\Minikube\\minikube.exe" image ls
 				'''
 			    }
 		 }
@@ -77,8 +77,8 @@ pipeline {
 					steps{
 						echo "Running Minikube Dashboard"
 						bat '''
-							minikube addons enable metrics-server
-							minikube dashboard
+							"C:\\Program Files\\Kubernetes\\Minikube\\minikube.exe" addons enable metrics-server
+							"C:\\Program Files\\Kubernetes\\Minikube\\minikube.exe" dashboard
 							echo "Dashboard is running"
 						'''
 					}
@@ -87,7 +87,7 @@ pipeline {
 					steps{
 						echo "Running minikube services"
 						bat '''
-							minikube service --all
+							"C:\\Program Files\\Kubernetes\\Minikube\\minikube.exe" service --all
 							echo "All services are running"
 						'''
 					}
