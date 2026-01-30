@@ -3,11 +3,10 @@ kind: Service
 metadata:
   name: mvnproj-service
 spec:
-  type: NodePort
   selector:
-    app: mvnproj
+    app.kubernetes.io/name: mvnproj
   ports:
-  - protocol: TCP
-    port: 80
-    targetPort: 80
-    nodePort: 31245
+    - protocol: TCP
+      port: 87
+      targetPort: 8080
+  type: NodePort
