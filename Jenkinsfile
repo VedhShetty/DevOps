@@ -50,7 +50,6 @@ pipeline {
 		    }
 		}
 
-       
         stage('Deploy the project using k8s') {
             steps {
                 echo "Running Java Application"
@@ -61,10 +60,10 @@ pipeline {
                 
                 "C:\\Program Files\\Kubernetes\\Minikube\\minikube.exe" image load vedhshetty/myapp:latest
                 kubectl apply -f deployment.yaml
-                sleep 20
+                timeout /t 20
                 kubectl get pods
                 kubectl apply -f services.yaml
-                sleep 10
+                timeout /t 10
                 kubectl get services
                 "C:\\Program Files\\Kubernetes\\Minikube\\minikube.exe" image ls
 				'''
@@ -94,13 +93,11 @@ pipeline {
 		 		}
 			}
 		 }
-		 
 	}
 
     post {
         success {
             echo 'I succeeded!'
-           
         }
         failure {
             echo 'Failed........'
