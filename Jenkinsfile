@@ -18,7 +18,7 @@ pipeline {
             }
               post {
                   always {
-                         junit '**/target/surefire-reports/*.xml'
+                         junit '*/target/surefire-reports/.xml'
                          echo 'Test Run succeeded!'          
 					}
 				}
@@ -29,17 +29,72 @@ pipeline {
                bat 'mvn clean package -DskipTests' 
             }
         }
-        stage('Test The Appln') {
+        stage(' Build the Docker Image') {
             steps {
-               echo "Testing my JAVA project"
+               echo "Build the Docker Image for mvn project"
+               bat 'docker build -t mvnproj:1.0 .'
             }
         }
-        stage('Deploy the project') {
+         stage('Push Docker Image to DockerHub') {
+		    steps {
+		        withCredentials([usernamePassword(credentialsId: 'dockerhubcred',
+		                                          usernameVariable: 'DOCKER_USER',
+		                                          passwordVariable: 'DOCKER_PASS')]) {
+		            bat '''
+		            docker logout
+		            echo %DOCKER_PASS%| docker login -u %DOCKER_USER% --password-stdin
+		            docker tag mvnproj:1.0 %DOCKER_USER%/myapp:latest
+		            docker push %DOCKER_USER%/myapp:latest
+		            '''
+		        }
+		    }
+		}
+
+       
+        stage('Deploy the project using k8s') {
             steps {
-                echo "Project is getting Deployed"
-            }
-        }
-    }
+                echo "Running Java Application"
+                bat '''
+                minikube delete
+                minikude start
+                minikube status
+                
+                minikube image load vedhshetty/mymvnproj:latest
+                kubectl apply -f deployment.yaml
+                sleep 20
+                kubectl get pods
+                kubectl apply -f services.yaml
+                sleep 10
+                kubectl get services
+                minikube image ls
+				'''
+			    }
+		 }
+		 
+		 stage('Parallel Loading of Services and Dashboard'){
+			parallel{
+				stage('Run Minikube Dashboard'){
+					steps{
+						echo "Running Minikube Dashboard"
+						bat '''
+							minikube dashboard
+							echo "Dashboard is running"
+						'''
+					}
+				}
+				stage('Run minikube services'){
+					steps{
+						echo "Running minikube services"
+						bat '''
+							minikube service --all
+							echo "All services are running"
+						'''
+					}
+		 		}
+			}
+		 }
+		 
+	}
 
     post {
         success {
