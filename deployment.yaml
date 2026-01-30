@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
       - name: mvnproj-container
-        image: myapp:latest
+        image: vedhshetty/myapp:latest
         imagePullPolicy: IfNotPresent
         ports:
         - containerPort: 8080
